@@ -1,0 +1,37 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Minecraft_Playtime_Counter.filechooser"
+        Title="filechooser"
+		Background="LightGray">
+    <Grid Name="grd">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="80"/>
+		</Grid.ColumnDefinitions>
+		<Button Grid.ColumnSpan="3" Grid.Row="0" Background="White" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top" Name="addbtn" ZIndex="1"> Add new Log folder location </Button>
+		<StackPanel Name="stckp" Grid.Column="0" Grid.Row="1">
+			<Button  IsEnabled="False" ZIndex="0">-</Button>
+			<Label HorizontalContentAlignment="Center"> Folder Location</Label>
+		</StackPanel>
+		<StackPanel Name="modpnl" Grid.Column="1" Grid.Row="1">
+			<Button IsEnabled="False" ZIndex="0">-</Button>
+			<Label HorizontalContentAlignment="Center"> Is modded</Label>
+		</StackPanel>
+		<StackPanel Name="removepnl" Grid.Column="2">
+			<Button IsEnabled="False" ZIndex="0">-</Button>
+			<Label HorizontalContentAlignment="Center"> ----</Label>
+		</StackPanel>
+	</Grid>
+	<Window.Styles>
+		<Style Selector="Button:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="Gray"/>
+		</Style>
+		<Style Selector="ToggleButton:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="Red"/>
+		</Style>
+	</Window.Styles>
+</Window>

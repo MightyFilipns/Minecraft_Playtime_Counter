@@ -1,0 +1,44 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="using:Minecraft_Playtime_Counter"
+		xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Minecraft_Playtime_Counter.MainWindow"
+        Title="Minecraft_Playtime_Counter"
+		Background="Black">
+	<Window.Styles>
+		<Style Selector="Button:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="Gray"/>
+		</Style>
+		<Style Selector="Label">
+			<Setter Property="Foreground" Value="White"/>
+		</Style>
+	</Window.Styles>
+	<StackPanel Name="st1">
+		<Button Name="locbtn" Foreground="Black" Background="White" VerticalAlignment="Top" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Open Log Folders Window" IsEnabled="True"></Button>
+		<Label HorizontalAlignment="Center" Foreground="White" Margin="10,10,10,10" FontSize="25" Name="stlbl">Idle</Label>
+		<Button Name="Start" HorizontalAlignment="Center" Background="White" >Start</Button>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<StackPanel Grid.Column="0">
+				<Label Name="lb1">Total Time played:0h</Label>
+				<Label Name="lb2">Longest log file: -----</Label>
+			</StackPanel>
+			<StackPanel Grid.Column="1">
+				<Label Name="lb3">Number of log files:0</Label>
+				<Label Name="lb4"> Time Taken: 0s</Label>
+			</StackPanel>
+		</Grid>
+		<StackPanel Name="stats">
+			<!--
+			implent a graph 
+			-->
+		</StackPanel>
+	</StackPanel>
+</Window>
