@@ -58,6 +58,10 @@ namespace Minecraft_Playtime_Counter
             OpenFolderDialog a = new OpenFolderDialog();
             a.Title = "Set log folder";
             string res = await a.ShowAsync(this);
+            if (res == null)
+            {
+                return;
+            }
             if (dirs.Any(a => { return res.StartsWith(a.location) || a.location.StartsWith(res); }))
             {
                 var msgb = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow(new MessageBox.Avalonia.DTO.MessageBoxStandardParams()
@@ -83,7 +87,6 @@ namespace Minecraft_Playtime_Counter
                 return;
             }
             adddir(res, false, dirs.Count, true);
-
         }
         void adddir(string res, bool mod, int ii, bool newe)
         {
@@ -91,7 +94,7 @@ namespace Minecraft_Playtime_Counter
             btn1.Background = dirs.Count % 2 == 0 ? Brush.Parse("Gray") : Brush.Parse("DarkGray");
             btn1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom;
             btn1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-            btn1.Name = "aaaa";
+            btn1.Name = "generatedlabel";
             btn1.Content = res;
             btn1.FontSize = 21.5;
             ToggleSwitch tw = new ToggleSwitch();

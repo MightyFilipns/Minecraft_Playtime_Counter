@@ -21,6 +21,7 @@ namespace Minecraft_Playtime_Counter
         static Label timetk;
         public static MainWindow ins;
         static StackPanel mainpnl;
+        static StackPanel statspnl;
         public MainWindow()
         {
             InitializeComponent();
@@ -31,6 +32,7 @@ namespace Minecraft_Playtime_Counter
             longfile = this.Find<Label>("lb2");
             numlogfiles = this.Find<Label>("lb3");
             timetk = this.Find<Label>("lb4");
+            statspnl = this.Find<StackPanel>("stats");
             mainpnl = this.Find<StackPanel>("st1");
             flocbtn.Click += (sender, args) =>
             {
@@ -80,6 +82,13 @@ namespace Minecraft_Playtime_Counter
                 numlogfiles.Content = "Number of log files:" + logic.totalcount;
                 longfile.Content = $"Longest log file:{logic.longestfile}.log {logic.longestlenght} lines";
                 timetk.Content = "Time Taken:" + logic.sw.Elapsed.TotalSeconds + "s";
+                int i =0;
+                logic.newa.Sort((a, b) => a.Item2.CompareTo(b.Item2));
+                logic.newa.Reverse();
+                logic.newa.ForEach((a) =>{
+                    statspnl.Children.Add(new Label() { Content = a + " : " + a.Item2.ToString() });
+                    i++;
+                });
             }, Avalonia.Threading.DispatcherPriority.Render);
         }
 

@@ -12,7 +12,7 @@ namespace Minecraft_Playtime_Counter
 {
 
     /// <summary>
-    /// the core class of the program. Handles all the counting, decompressing and other stuff
+    /// The core class of the program. Handles all the counting, decompressing and other stuff
     /// </summary>
     public static class logic
     {
@@ -22,6 +22,8 @@ namespace Minecraft_Playtime_Counter
         public static TimeSpan total = new TimeSpan();
         public static List<timedata> data = new List<timedata>();
         public static Stopwatch sw = new Stopwatch();
+
+        public static List<(string, TimeSpan)> newa = new List<(string, TimeSpan)>();
         
         public static string dirname;
         public static int scanned = 0;
@@ -56,8 +58,8 @@ namespace Minecraft_Playtime_Counter
                 int loop = 1;
                 files.ForEach(x =>
                 {
-                    DecompressFile(x.FullName, str + "/" + x.Name.Replace(".gz", "").Trim() + "+" + i + 1);
                     logic.dirname = dirname;
+                    DecompressFile(x.FullName, str + "/" + x.Name.Replace(".gz", "").Trim() + "+" + i + 1+ "+"+ dirname.Split('\\').ElementAt(new Index(3, true)));
                     MainWindow.updatestatus($"Decompressing {loop}/{files.Count} ({((float)loop / (float)files.Count) * 100}%) --- ({dirname.Split('\\').ElementAt(new Index(3, true))}) {i + 1}/{finalpaths.Count}");
                     loop++;
                 });
@@ -68,10 +70,24 @@ namespace Minecraft_Playtime_Counter
             //this loop calls the function that parses the files and adds the data to the list
             logs.ForEach(y =>
             {
+                dirname = y.Name.Split('+').Reverse().ElementAt(0);
                 analyzefile(File.ReadAllLines(y.FullName).ToList(), y.Name.Replace(".log", "").Trim());
             });
  
             data.ForEach(x => total += x.timeplayed);
+            data.Sort((a, b) => b.name.CompareTo(a.name));
+
+            int index = -1;
+            string lastname = null;
+            data.ForEach((a) => {
+                if (lastname is null || lastname != a.name)
+                {
+                    lastname = a.name;
+                    index++;
+                    newa.Add((lastname,new TimeSpan()));
+                }
+                newa[index] = (newa[index].Item1,newa[index].Item2.Add(a.timeplayed));
+            });
             MainWindow.updatestatus("Done");
             sw.Stop();
             MainWindow.updateUI();
@@ -120,7 +136,7 @@ namespace Minecraft_Playtime_Counter
         public static void analyzefile(List<string> lines, string name)
         {
             scanned++;
-            MainWindow.updatestatus($"Scanning {scanned}/{totalcount} ({((float)scanned / (float)totalcount) * 100}%) --- ({dirname.Split('\\').ElementAt(new Index(3, true))}) {folderi + 1}/{finalpaths.Count}");
+            MainWindow.updatestatus($"Scanning {scanned}/{totalcount} ({((float)scanned / (float)totalcount) * 100}%) --- ({dirname}) {folderi + 1}/{finalpaths.Count}");
             List<string> split = name.Split('-').ToList();
             DateOnly startdate;
             if (split.Count >= 3)
@@ -165,12 +181,12 @@ namespace Minecraft_Playtime_Counter
                 {
                     TimeSpan stday = tsday - sttime;
                     TimeSpan total = stday + lasttime + TimeSpan.FromDays(days);
-                    data.Add(new timedata(total, startdate, lastdate));
+                    data.Add(new timedata(total, startdate, lastdate, dirname));
                 }
                 else
                 {
                     TimeSpan diff = lasttime - sttime;
-                    data.Add(new timedata(diff, startdate, lastdate));
+                    data.Add(new timedata(diff, startdate, lastdate, dirname));
                 };
             }
             //short format / no date
@@ -205,7 +221,7 @@ namespace Minecraft_Playtime_Counter
                 TimeSpan lasttime = TimeSpan.Parse(lines[lastindex].Substring(1, 8));
                 if (days < 0)
                 {
-                    data.Add(new timedata(lasttime - sttime, startdate, startdate));
+                    data.Add(new timedata(lasttime - sttime, startdate, startdate, dirname));
                 }
                 //this else clause will only be executed if the above afformentioned bug is encounetered.
                 //Message box should be displayed to the user.
@@ -237,18 +253,20 @@ namespace Minecraft_Playtime_Counter
         }
 
         //This struct is used to store the time data of a log file.
-        //it should be modfied to only have one DateOnly.
+        //it should be modfied to only have one DateOnly field.
         public struct timedata
         {
-            public timedata(TimeSpan time, DateOnly _startdate, DateOnly _enddate)
+            public timedata(TimeSpan time, DateOnly _startdate, DateOnly _enddate,string namec)
             {
                 timeplayed = time;
                 startdate = _startdate;
                 enddate = _enddate;
+                name = namec;
             }
             public TimeSpan timeplayed;
             public DateOnly startdate;
             public DateOnly enddate;
+            public string name;
         }
         /// <summary>
         /// A simple message dialog that displays an error to the user.
@@ -257,12 +275,16 @@ namespace Minecraft_Playtime_Counter
         /// <param name="w">The owner of the error dialog</param>
         public static async void showerror(string str,Window w)
         {
-            await MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow(new MessageBox.Avalonia.DTO.MessageBoxStandardParams() 
+            await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                ContentMessage = str,
-                ContentHeader = "Error Encountered",
-                ContentTitle = "Error"
-            }).ShowDialog(w);
+                await MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow(new MessageBox.Avalonia.DTO.MessageBoxStandardParams()
+                {
+                    ContentMessage = str,
+                    ContentHeader = "Error Encountered",
+                    ContentTitle = "Error"
+                }).ShowDialog(w);
+            }
+            ,Avalonia.Threading.DispatcherPriority.Render);
         }
 
     }

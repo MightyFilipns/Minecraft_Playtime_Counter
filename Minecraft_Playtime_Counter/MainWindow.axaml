@@ -36,9 +36,7 @@
 			</StackPanel>
 		</Grid>
 		<StackPanel Name="stats">
-			<!--
-			implent a graph 
-			-->
+			<Label>-----------------------------------------------------------------------</Label>
 		</StackPanel>
 	</StackPanel>
 </Window>
