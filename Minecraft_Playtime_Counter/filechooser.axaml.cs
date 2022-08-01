@@ -23,6 +23,7 @@ namespace Minecraft_Playtime_Counter
         }
         public static List<logfolderstr> dirs = new List<logfolderstr>();
         Button adddirbtn;
+        Button donebtn;
         StackPanel stp1;
         StackPanel modpanel;
         StackPanel rmpnl;
@@ -34,11 +35,14 @@ namespace Minecraft_Playtime_Counter
             this.AttachDevTools();
 #endif
             adddirbtn = this.Find<Button>("addbtn");
-            adddirbtn.Click += Adddirbtn_Click;
             stp1 = this.Find<StackPanel>("stckp");
             grdl = this.Find<Grid>("grd");
             modpanel = this.Find<StackPanel>("modpnl");
             rmpnl = this.Find<StackPanel>("removepnl");
+            donebtn = this.Find<Button>("wdonebtn");
+
+            adddirbtn.Click += Adddirbtn_Click;
+            donebtn.Click += (a, b) => { Close(); };
             grdl.ColumnDefinitions[0] = new ColumnDefinition(columew, GridUnitType.Pixel);
             //to properly resize colume weh the windows is resized
             ClientSizeProperty.Changed.AddClassHandler<filechooser>((a, b) =>
